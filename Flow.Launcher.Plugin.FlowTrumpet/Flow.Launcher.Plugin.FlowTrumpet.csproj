@@ -25,6 +25,10 @@
     </Content>
   </ItemGroup>
 
+    <ItemGroup>
+	    <KnownFrameworkReference Update="Microsoft.WindowsDesktop.App.WPF" IsWindowsOnly="false" />
+    </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="CoreAudio" Version="1.37.0" />
     <PackageReference Include="Flow.Launcher.Plugin" Version="4.4.0" />
