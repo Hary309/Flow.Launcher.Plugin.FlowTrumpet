@@ -1,0 +1,12 @@
+{
+    "ID": "3AF7F9DD4367439AA4730641D99EDA21",
+    "ActionKeyword": "vol",
+    "Name": "FlowTrumpet",
+    "Description": "Plugin that allows you to control the volume of specific app",
+    "Author": "Hary309",
+    "Version": "1.0.0",
+    "Language": "csharp",
+    "Website": "https://github.com/Hary309/Flow.Launcher.Plugin.FlowTrumpet",
+    "IcoPath": "icon.png",
+    "ExecuteFileName": "Flow.Launcher.Plugin.FlowTrumpet.dll"
+}
