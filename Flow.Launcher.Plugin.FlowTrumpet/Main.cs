@@ -12,19 +12,19 @@ using System.Threading.Tasks;
 
 namespace Flow.Launcher.Plugin.FlowTrumpet
 {
-    public class FlowTrumpet : IPlugin
+    public class Main : IPlugin
     {
         private PluginInitContext _context;
 
         private IAudioSessionManager _audioSessionManager;
-        private Controller _sessionController;
+        private FlowTrumpet _sessionController;
 
         public void Init(PluginInitContext context)
         {
             _context = context;
             
             _audioSessionManager = new AudioSessionManager();
-            _sessionController = new Controller(_context.API, _context.CurrentPluginMetadata, _audioSessionManager);
+            _sessionController = new FlowTrumpet(_context.API, _context.CurrentPluginMetadata, _audioSessionManager);
         }
 
         public List<Result> Query(Query query)

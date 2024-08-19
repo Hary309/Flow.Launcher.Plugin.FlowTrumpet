@@ -3,9 +3,9 @@ using Moq;
 
 namespace Flow.Launcher.Plugin.FlowTrumpet.Tests
 {
-    public class ControllerTests
+    public class FlowTrumpetTests
     {
-        private Controller _controller;
+        private FlowTrumpet _controller;
 
         private Mock<IPublicAPI> _publicApiMock;
         private Mock<IAudioSessionManager> _audioManagerMock;
@@ -20,7 +20,7 @@ namespace Flow.Launcher.Plugin.FlowTrumpet.Tests
             };
             _audioManagerMock = new Mock<IAudioSessionManager>();
 
-            _controller = new Controller(_publicApiMock.Object, pluginMetadata, _audioManagerMock.Object);
+            _controller = new FlowTrumpet(_publicApiMock.Object, pluginMetadata, _audioManagerMock.Object);
         }
 
         [Test]
@@ -34,12 +34,14 @@ namespace Flow.Launcher.Plugin.FlowTrumpet.Tests
                     Name = "Browser",
                     ProcessId = 123,
                     Volume = 0.5f,
+                    IcoPath = "path/to/icon.png",
                 },
                 new AudioSessionInfo
                 {
                     Name = "Music Player",
                     ProcessId = 54,
                     Volume = 0.23f,
+                    IcoPath = "other/path/to/asdf.png",
                 }
             };
 
@@ -56,6 +58,7 @@ namespace Flow.Launcher.Plugin.FlowTrumpet.Tests
             {
                 Assert.That(sessionList[i].Title, Is.EqualTo($"{sessionsInfo[i].Name} - {(uint)(sessionsInfo[i].Volume * 100)}%"));
                 Assert.That(sessionList[i].SubTitle, Is.EqualTo($"Id: {sessionsInfo[i].ProcessId}"));
+                Assert.That(sessionList[i].IcoPath, Is.EqualTo(sessionsInfo[i].IcoPath));
             }
 
             _audioManagerMock.Verify(p => p.GetSessionsInfo());
@@ -75,6 +78,7 @@ namespace Flow.Launcher.Plugin.FlowTrumpet.Tests
             Assert.IsNotNull(sessionList);
             Assert.That(sessionList.Count, Is.EqualTo(1));
             Assert.That(sessionList[0].Title, Is.EqualTo("No active application"));
+            Assert.That(sessionList[0].IcoPath, Is.EqualTo(Globals.PluginIconPath));
 
             _audioManagerMock.Verify(p => p.GetSessionsInfo());
         }
@@ -104,6 +108,7 @@ namespace Flow.Launcher.Plugin.FlowTrumpet.Tests
                 Name = "Music Player",
                 ProcessId = 2137,
                 Volume = 1.0f,
+                IcoPath = "other/path/to/asdf.png",
             };
 
             _audioManagerMock.Setup(p => p.GetSessionInfo(It.IsAny<uint>())).Returns(audioSessionInfo);
@@ -121,6 +126,7 @@ namespace Flow.Launcher.Plugin.FlowTrumpet.Tests
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results[0].Title, Is.EqualTo($"{audioSessionInfo.Name} - {(uint)(audioSessionInfo.Volume * 100)}%"));
             Assert.That(results[0].SubTitle, Is.EqualTo("Type number to set new volume"));
+            Assert.That(results[0].IcoPath, Is.EqualTo(audioSessionInfo.IcoPath));
         }
 
         [Test]
@@ -134,12 +140,14 @@ namespace Flow.Launcher.Plugin.FlowTrumpet.Tests
                     Name = "Browser",
                     ProcessId = 123,
                     Volume = 0.5f,
+                    IcoPath = "path/to/icon.png",
                 },
                 new AudioSessionInfo
                 {
                     Name = "Music Player",
                     ProcessId = 54,
                     Volume = 0.23f,
+                    IcoPath = "other/path/to/asdf.png",
                 }
             };
 
@@ -156,6 +164,7 @@ namespace Flow.Launcher.Plugin.FlowTrumpet.Tests
             {
                 Assert.That(results[i].Title, Is.EqualTo($"{sessionsInfo[i].Name} - {(uint)(sessionsInfo[i].Volume * 100)}%"));
                 Assert.That(results[i].SubTitle, Is.EqualTo($"Id: {sessionsInfo[i].ProcessId}"));
+                Assert.That(results[i].IcoPath, Is.EqualTo(sessionsInfo[i].IcoPath));
             }
 
             _audioManagerMock.Verify(p => p.GetSessionsInfo());
@@ -172,12 +181,14 @@ namespace Flow.Launcher.Plugin.FlowTrumpet.Tests
                     Name = "Browser",
                     ProcessId = 123,
                     Volume = 0.5f,
+                    IcoPath = "path/to/icon.png",
                 },
                 new AudioSessionInfo
                 {
                     Name = "Music Player",
                     ProcessId = 54,
                     Volume = 0.23f,
+                    IcoPath = "other/path/to/asdf.png",
                 }
             };
 
@@ -194,6 +205,7 @@ namespace Flow.Launcher.Plugin.FlowTrumpet.Tests
             // verify
             Assert.That(results[0].Title, Is.EqualTo($"{sessionsInfo[1].Name} - {(uint)(sessionsInfo[1].Volume * 100)}%"));
             Assert.That(results[0].SubTitle, Is.EqualTo($"Id: {sessionsInfo[1].ProcessId}"));
+            Assert.That(results[0].IcoPath, Is.EqualTo(sessionsInfo[1].IcoPath));
 
             _audioManagerMock.Verify(p => p.GetSessionsInfo());
             _publicApiMock.Verify(p => p.ChangeQuery("vol 54 ", false));
@@ -210,12 +222,14 @@ namespace Flow.Launcher.Plugin.FlowTrumpet.Tests
                     Name = "Browser",
                     ProcessId = 123,
                     Volume = 0.5f,
+                    IcoPath = "path/to/icon.png",
                 },
                 new AudioSessionInfo
                 {
                     Name = "Music Player",
                     ProcessId = 54,
                     Volume = 0.23f,
+                    IcoPath = "other/path/to/asdf.png",
                 }
             };
 
@@ -228,6 +242,7 @@ namespace Flow.Launcher.Plugin.FlowTrumpet.Tests
             Assert.IsNotNull(results);
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results[0].Title, Is.EqualTo("Process not found"));
+            Assert.That(results[0].IcoPath, Is.EqualTo(Globals.PluginIconPath));
 
             _audioManagerMock.Verify(p => p.GetSessionsInfo());
         }
@@ -241,6 +256,7 @@ namespace Flow.Launcher.Plugin.FlowTrumpet.Tests
                 Name = "Music Player",
                 ProcessId = 54,
                 Volume = 0.23f,
+                IcoPath = "other/path/to/asdf.png",
             };
 
             _audioManagerMock.Setup(p => p.GetSessionInfo(It.IsAny<uint>())).Returns(sessionInfo);
@@ -253,6 +269,7 @@ namespace Flow.Launcher.Plugin.FlowTrumpet.Tests
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results[0].Title, Is.EqualTo($"{sessionInfo.Name} - {(uint)(sessionInfo.Volume * 100)}%"));
             Assert.That(results[0].SubTitle, Is.EqualTo("Type number to set new volume"));
+            Assert.That(results[0].IcoPath, Is.EqualTo(sessionInfo.IcoPath));
 
             _audioManagerMock.Verify(p => p.GetSessionInfo(54));
         }
@@ -268,12 +285,14 @@ namespace Flow.Launcher.Plugin.FlowTrumpet.Tests
                     Name = "Browser",
                     ProcessId = 123,
                     Volume = 0.5f,
+                    IcoPath = "path/to/icon.png",
                 },
                 new AudioSessionInfo
                 {
                     Name = "Music Player",
                     ProcessId = 54,
                     Volume = 0.23f,
+                    IcoPath = "other/path/to/asdf.png",
                 }
             };
 
@@ -287,6 +306,7 @@ namespace Flow.Launcher.Plugin.FlowTrumpet.Tests
             Assert.IsNotNull(results);
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results[0].Title, Is.EqualTo("Process not found"));
+            Assert.That(results[0].IcoPath, Is.EqualTo(Globals.PluginIconPath));
 
             _audioManagerMock.Verify(p => p.GetSessionInfo(542));
             _audioManagerMock.Verify(p => p.GetSessionsInfo());
@@ -301,6 +321,7 @@ namespace Flow.Launcher.Plugin.FlowTrumpet.Tests
                 Name = "Music Player",
                 ProcessId = 54,
                 Volume = 0.23f,
+                IcoPath = "path/to/icon.png",
             };
 
             _audioManagerMock.Setup(p => p.SetSessionVolume(It.IsAny<uint>(), It.IsAny<float>()));
@@ -314,6 +335,7 @@ namespace Flow.Launcher.Plugin.FlowTrumpet.Tests
             Assert.That(results.Count, Is.EqualTo(1));
             Assert.That(results[0].Title, Is.EqualTo($"{sessionInfo.Name} - {(uint)(sessionInfo.Volume * 100)}%"));
             Assert.That(results[0].SubTitle, Is.EqualTo("Type number to set new volume"));
+            Assert.That(results[0].IcoPath, Is.EqualTo(sessionInfo.IcoPath));
 
             _audioManagerMock.Verify(p => p.GetSessionInfo(54));
 

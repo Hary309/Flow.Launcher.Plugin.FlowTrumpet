@@ -82,6 +82,7 @@ namespace Flow.Launcher.Plugin.FlowTrumpet.Audio
                 Name = name,
                 ProcessId = session.ProcessID,
                 Volume = session.SimpleAudioVolume.MasterVolume,
+                IcoPath = ProcessHelper.TryGetProcessIconFilename(p),
             };
         }
     }

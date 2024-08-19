@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Flow.Launcher.Plugin.FlowTrumpet
 {
-    internal class Controller
+    internal class FlowTrumpet
     {
         private readonly IPublicAPI _publicAPI;
         private readonly PluginMetadata _pluginMetadata;
@@ -17,7 +17,8 @@ namespace Flow.Launcher.Plugin.FlowTrumpet
 
         private float? _newVolume;
 
-        public Controller(IPublicAPI publicAPI, PluginMetadata pluginMetadata, IAudioSessionManager audioSessionManager)
+
+        public FlowTrumpet(IPublicAPI publicAPI, PluginMetadata pluginMetadata, IAudioSessionManager audioSessionManager)
         {
             _publicAPI = publicAPI;
             _pluginMetadata = pluginMetadata;
@@ -44,7 +45,8 @@ namespace Flow.Launcher.Plugin.FlowTrumpet
             {
                 yield return new Result()
                 {
-                    Title = "No active application"
+                    Title = "No active application",
+                    IcoPath = Globals.PluginIconPath,
                 };
             }
         }
@@ -113,7 +115,8 @@ namespace Flow.Launcher.Plugin.FlowTrumpet
                 {
                     new Result()
                     {
-                        Title = "Process not found"
+                        Title = "Process not found",
+                        IcoPath = Globals.PluginIconPath,
                     }
                 };
             }
@@ -129,6 +132,7 @@ namespace Flow.Launcher.Plugin.FlowTrumpet
             {
                 Title = $"{session.Name} - {(uint)(session.Volume * 100)}%",
                 SubTitle = $"Id: {session.ProcessId}",
+                IcoPath = session.IcoPath,
             };
         }
     }
