@@ -26,7 +26,9 @@ namespace Flow.Launcher.Plugin.FlowTrumpet
 
         public IEnumerable<Result> GetDefaultSessionList()
         {
-            foreach (var session in _audioSessionManager.GetSessionsInfo())
+            var sessionsInfo = _audioSessionManager.GetSessionsInfo();
+
+            foreach (var session in sessionsInfo)
             {
                 var result = CreateResult(session);
                 result.Action = _ =>
@@ -36,6 +38,14 @@ namespace Flow.Launcher.Plugin.FlowTrumpet
                 };
 
                 yield return result;
+            }
+
+            if (sessionsInfo.Count() == 0)
+            {
+                yield return new Result()
+                {
+                    Title = "No active application"
+                };
             }
         }
 
