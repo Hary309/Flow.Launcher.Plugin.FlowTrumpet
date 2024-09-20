@@ -23,7 +23,7 @@ namespace Flow.Launcher.Plugin.FlowTrumpet
         {
             _context = context;
             
-            _audioSessionManager = new AudioSessionManager();
+            _audioSessionManager = new AudioSessionManager(_context.API);
             _sessionController = new FlowTrumpet(_context.API, _context.CurrentPluginMetadata, _audioSessionManager);
         }
 

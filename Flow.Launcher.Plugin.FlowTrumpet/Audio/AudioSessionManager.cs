@@ -16,10 +16,18 @@ namespace Flow.Launcher.Plugin.FlowTrumpet.Audio
         private MMNotificationClient _notfClient;
 
         private List<AudioSessionInfo> _sessions = new();
+        
+        private IPublicAPI _publicAPI;
 
-        public AudioSessionManager()
+        public AudioSessionManager(IPublicAPI publicAPI)
+            :  this(publicAPI, new MMDeviceEnumerator(Guid.NewGuid()))
         {
-            _deviceEnumerator = new MMDeviceEnumerator(Guid.NewGuid());
+        }
+
+        public AudioSessionManager(IPublicAPI publicAPI, MMDeviceEnumerator deviceEnumerator)
+        {
+            _publicAPI = publicAPI;
+            _deviceEnumerator = deviceEnumerator;
             _activeDevice = _deviceEnumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
 
             _activeDevice.AudioSessionManager2.OnSessionCreated += HandleSessionCreated;
@@ -28,18 +36,16 @@ namespace Flow.Launcher.Plugin.FlowTrumpet.Audio
 
             _notfClient.DefaultDeviceChanged += (sender, e) =>
             {
+                if (e.DataFlow != DataFlow.Render || e.Role != Role.Multimedia)
+                {
+                    return;
+                }
+
                 _activeDevice = _deviceEnumerator.GetDevice(e.DeviceId);
+                InitializeSesssions();
             };
 
-            if (_activeDevice == null)
-            {
-                throw new Exception("Device not found.");
-            }
-
-            foreach (var session in _activeDevice.AudioSessionManager2.Sessions)
-            {
-                _sessions.Add(CreateSessionInfo(session));
-            }
+            InitializeSesssions();
         }
 
         private void HandleSessionCreated(object sender, CoreAudio.Interfaces.IAudioSessionControl2 newSession)
@@ -81,6 +87,23 @@ namespace Flow.Launcher.Plugin.FlowTrumpet.Audio
             session.SimpleAudioVolume.MasterVolume = Math.Clamp(newVolume, 0.0f, 1.0f);
         }
 
+        private void InitializeSesssions()
+        {
+            _publicAPI.LogInfo("AudioSessionManager", $"New device detected '{_activeDevice.DeviceFriendlyName}', listing sesssions.");
+
+            if (_activeDevice == null)
+            {
+                throw new Exception("Device not found.");
+            }
+
+            _sessions.Clear();
+
+            foreach (var session in _activeDevice.AudioSessionManager2.Sessions)
+            {
+                _sessions.Add(CreateSessionInfo(session));
+            }
+        }
+
         private AudioSessionInfo CreateSessionInfo(AudioSessionControl2 session)
         {
             if (session == null)
@@ -101,6 +124,8 @@ namespace Flow.Launcher.Plugin.FlowTrumpet.Audio
             {
                 name = p.ProcessName;
             }
+
+            _publicAPI.LogInfo("AudioSessionManager", $" - Adding session {name}");
 
             return new AudioSessionInfo
             {
@@ -123,6 +148,8 @@ namespace Flow.Launcher.Plugin.FlowTrumpet.Audio
                 {
                     return;
                 }
+
+                _publicAPI.LogInfo("AudioSessionManager", $"Session {sessionInfo.Name} expired.");
 
                 _sessions.Remove(sessionInfo);
             }
