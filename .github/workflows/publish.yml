@@ -1,0 +1,48 @@
+name: Publish Release
+
+on:
+  push:
+    tags:
+        - '*'
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.0.x'
+
+      - name: Get Version
+        id: version
+        uses: notiz-dev/github-action-json-property@release
+        with:
+          path: 'Flow.Launcher.Plugin.FlowTrumpet\plugin.json'
+          prop_path: 'Version'
+      - run: echo ${{steps.version.outputs.prop}}
+
+      - name: Build
+        run: dotnet build --no-restore -c Release
+
+      - name: Test
+        run: dotnet test --no-build --verbosity normal -c Release
+
+      - name: Setup filename
+        id: filename
+        run: echo "PACKAGE_NAME=Flow.Launcher.Plugin.FlowTrumpet-${{steps.version.outputs.prop}}" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      - name: Package
+        run: |
+          dotnet publish -c Release -r win-x64 --no-self-contained Flow.Launcher.Plugin.FlowTrumpet/Flow.Launcher.Plugin.FlowTrumpet.csproj
+          7z a -tzip "${{steps.filename.outputs.PACKAGE_NAME}}.zip" "./Flow.Launcher.Plugin.FlowTrumpet/bin/Release/win-x64/publish/*"
+
+      - name: Publish
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ${{steps.filename.outputs.PACKAGE_NAME}}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
