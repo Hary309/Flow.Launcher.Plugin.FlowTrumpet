@@ -1,11 +1,11 @@
 Flow.Launcher.Plugin.FlowTrumpet
 ==================
 
-A plugin for the [Flow launcher](https://github.com/Flow-Launcher/Flow.Launcher).
+Set the volume of a specific application.
 
-### Usage
+### Demo
 
-    * <arguments>
+![](Images/demo.gif)
 
 ### Icon
 

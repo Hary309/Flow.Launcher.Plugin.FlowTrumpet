@@ -1,2 +1,0 @@
-dotnet publish Flow.Launcher.Plugin.FlowTrumpet -c Release -r win-x64 --no-self-contained
-Compress-Archive -LiteralPath Flow.Launcher.Plugin.FlowTrumpet/bin/Release/win-x64/publish -DestinationPath Flow.Launcher.Plugin.FlowTrumpet/bin/FlowTrumpet.zip -Force
