@@ -4,7 +4,7 @@
     "Name": "FlowTrumpet",
     "Description": "Set the volume of a specific application",
     "Author": "Hary309",
-    "Version": "1.0.0",
+    "Version": "1.1.0",
     "Language": "csharp",
     "Website": "https://github.com/Hary309/Flow.Launcher.Plugin.FlowTrumpet",
     "IcoPath": "Images\\app.png",
