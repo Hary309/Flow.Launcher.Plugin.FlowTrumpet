@@ -16,7 +16,7 @@ namespace Flow.Launcher.Plugin.FlowTrumpet.Audio
         private MMNotificationClient _notfClient;
 
         private List<AudioSessionInfo> _sessions = new();
-        
+
         private IPublicAPI _publicAPI;
 
         public AudioSessionManager(IPublicAPI publicAPI)
